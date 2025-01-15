@@ -27,9 +27,14 @@ jobs:
           mkdir ${{ github.workspace }}/results
           dotnet list package --vulnerable --include-transitive --format json >> "${{ github.workspace }}/results/vulnerabilities.json"
           jq -s '.' */obj/project.assets.json > "${{ github.workspace }}/results/all.project.assets.json"
-          BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          COMMIT=$(git rev-parse HEAD)
-          curl -X POST -F "repository=${{ github.repository_id }}" -F 'branch=$BRANCH' -F 'commit=$COMMIT' -F "vulnerabilities=${{ github.workspace }}/results/vulnerabilities.json" -F "assets=${{ github.workspace }}/results/all.project.assets.json" -H "x-functions-key: ${{ secrets.PROCESSNUGETAUDITRESULTS_KEY }}" https://internalautomation.azurewebsites.net/api/ProcessNuGetAuditResults
+          curl -X POST \
+             -F "repository=${{ github.repository_id }}" \
+             -F "branch=${{ github.ref_name }}" \
+             -F "commit=${{ github.sha }}" \
+             -F "vulnerabilities=${{ github.workspace }}/results/vulnerabilities.json" \
+             -F "assets=${{ github.workspace }}/results/all.project.assets.json" \
+             -H "x-functions-key: ${{ secrets.PROCESSNUGETAUDITRESULTS_KEY }}" \
+             https://internalautomation.azurewebsites.net/api/ProcessNuGetAuditResults
       - name: Archive files on failure
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
