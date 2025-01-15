@@ -6,7 +6,7 @@ env:
   DOTNET_NOLOGO: true
 
 jobs:
-  nuget-audit:
+  code-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
