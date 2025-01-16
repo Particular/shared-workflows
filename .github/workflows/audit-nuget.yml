@@ -20,7 +20,7 @@ jobs:
         id: restore
         shell: bash
         run: |
-          CVECOUNT=$(dotnet restore src -v m | grep -c -e "NU190[1-4]")
+          CVECOUNT=$(dotnet restore src | grep -c -e "NU190[1-4]")
           exit $CVECOUNT
       - name: Report results on failure
         if: ${{ failure() }}
