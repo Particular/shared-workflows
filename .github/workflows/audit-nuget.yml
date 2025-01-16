@@ -20,7 +20,9 @@ jobs:
         id: restore
         shell: bash
         run: |
-          CVECOUNT=$(dotnet restore src | grep -c -e "NU190[1-4]")
+          dotnet restore src > ${{ runner.temp }}/dotnetrestore.log
+          cat ${{ runner.temp }}/dotnetrestore.log
+          CVECOUNT=$(cat ${{ runner.temp }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
           exit $CVECOUNT
       - name: Report results on failure
         if: ${{ failure() }}
