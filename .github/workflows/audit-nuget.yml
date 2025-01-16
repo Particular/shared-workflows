@@ -18,7 +18,10 @@ jobs:
           global-json-file: global.json
       - name: .NET Restore
         id: restore
-        run: dotnet restore src
+        shell: bash
+        run: |
+          CVECOUNT=$(dotnet restore src -v m | grep -c -e "NU190[1-4]")
+          exit $CVECOUNT
       - name: Report results on failure
         if: ${{ failure() }}
         shell: bash
