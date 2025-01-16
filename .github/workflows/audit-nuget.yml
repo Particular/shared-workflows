@@ -2,6 +2,10 @@ name: NuGet audit
 
 on:
   workflow_call:
+    outputs:
+       dotnetrestore:
+          description: "Results of the dotnetrestore command"
+          value: ${{ jobs.nuget-audit.outputs.results }}
     secrets:
       PROCESSNUGETAUDITRESULTS_KEY:
         required: true
@@ -9,6 +13,8 @@ on:
 jobs:
   nuget-audit:
     runs-on: ubuntu-22.04
+    outputs:
+      results: ${{ steps.restore.outputs.results }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -18,9 +24,10 @@ jobs:
           global-json-file: global.json
       - name: .NET Restore
         id: restore
-        shell: bash
+        shell: bash        
         run: |
           dotnet restore src > ${{ runner.temp }}/dotnetrestore.log
+          echo "result=$(cat ${{ runner.temp }}/dotnetrestore.log)" >> $GITHUB_OUTPUT
           echo "### dotnet restore result" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "```bash" >> $GITHUB_STEP_SUMMARY
