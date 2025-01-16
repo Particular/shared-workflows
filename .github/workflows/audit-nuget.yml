@@ -23,9 +23,9 @@ jobs:
           dotnet restore src > ${{ runner.temp }}/dotnetrestore.log
           echo "### dotnet restore result" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "```bash" $GITHUB_STEP_SUMMARY
+          echo "```bash" >> $GITHUB_STEP_SUMMARY
           cat ${{ runner.temp }}/dotnetrestore.log >> $GITHUB_STEP_SUMMARY
-          echo "```" $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
           CVECOUNT=$(cat ${{ runner.temp }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
           exit $CVECOUNT
       - name: Report results on failure
