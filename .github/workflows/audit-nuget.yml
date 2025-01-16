@@ -3,9 +3,9 @@ name: NuGet audit
 on:
   workflow_call:
     outputs:
-       dotnetrestore:
+       restorereport:
           description: "Results of the dotnetrestore command"
-          value: ${{ jobs.nuget-audit.outputs.results }}
+          value: ${{ jobs.nuget-audit.outputs.restorereport }}
     secrets:
       PROCESSNUGETAUDITRESULTS_KEY:
         required: true
@@ -27,15 +27,10 @@ jobs:
         shell: bash        
         run: |
           dotnet restore src > ${{ runner.temp }}/dotnetrestore.log
-          echo "result=$(cat ${{ runner.temp }}/dotnetrestore.log)" >> $GITHUB_OUTPUT
-          echo "### dotnet restore result" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "```bash" >> $GITHUB_STEP_SUMMARY
-          cat ${{ runner.temp }}/dotnetrestore.log >> $GITHUB_STEP_SUMMARY
-          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "restorereport=$(cat ${{ runner.temp }}/dotnetrestore.log)" >> $GITHUB_OUTPUT
           CVECOUNT=$(cat ${{ runner.temp }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
           exit $CVECOUNT
-      - name: Report results on failure
+      - name: Upload results on failure
         if: ${{ failure() }}
         shell: bash
         working-directory: ./src
