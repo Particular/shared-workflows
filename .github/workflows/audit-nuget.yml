@@ -14,7 +14,7 @@ jobs:
   nuget-audit:
     runs-on: ubuntu-22.04
     outputs:
-      results: ${{ steps.restore.outputs.results }}
+      restorereport: ${{ steps.restore.outputs.restorereport }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
