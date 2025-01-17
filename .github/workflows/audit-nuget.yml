@@ -43,8 +43,7 @@ jobs:
         if: ${{ failure() }}
         shell: bash
         working-directory: ./src
-        run: |          
-          mkdir ${{ github.workspace }}/results
+        run: |
           dotnet list package --vulnerable --include-transitive --format json >> "${{ github.workspace }}/results/vulnerabilities.json"
           jq -s '.' */obj/project.assets.json > "${{ github.workspace }}/results/all.project.assets.json"
           curl -X POST \
