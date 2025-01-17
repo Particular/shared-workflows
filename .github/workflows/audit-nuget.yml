@@ -31,9 +31,9 @@ jobs:
           set +e +o pipefail
           CVECOUNT=$(dotnet restore src | tee ${{ github.workspace }}/results/dotnetrestore.log | grep -c -e "NU190[1-4]")
           set -e -o pipefail
-          exit_code=$CVECOUNT
           RESTOREOUTPUT=$(cat ${{ github.workspace }}/results/dotnetrestore.log)
-          echo $RESTOREOUTPUT          
+          echo $RESTOREOUTPUT
+          exit $CVECOUNT
       - name: Upload results on failure
         if: ${{ failure() }}
         shell: bash
