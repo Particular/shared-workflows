@@ -33,11 +33,12 @@ jobs:
           set -e -o pipefail
           exit_code=0
           RESTOREOUTPUT=$(cat ${{ github.workspace }}/results/dotnetrestore.log)
-          RESTOREOUTPUT="${RESTOREOUTPUT//'%'/'%25'}"
-          RESTOREOUTPUT="${RESTOREOUTPUT//$'\n'/'%0A'}"
-          RESTOREOUTPUT="${RESTOREOUTPUT//$'\r'/'%0D'}"
-          echo "restoreoutput=$RESTOREOUTPUT" >> $GITHUB_OUTPUT
           echo $RESTOREOUTPUT
+          #RESTOREOUTPUT="${RESTOREOUTPUT//'%'/'%25'}"
+          #RESTOREOUTPUT="${RESTOREOUTPUT//$'\n'/'%0A'}"
+          #RESTOREOUTPUT="${RESTOREOUTPUT//$'\r'/'%0D'}"
+          echo "restoreoutput=$RESTOREOUTPUT" >> $GITHUB_OUTPUT
+          
           exit $CVECOUNT
       - name: Upload results on failure
         if: ${{ failure() }}
