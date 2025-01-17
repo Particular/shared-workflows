@@ -20,15 +20,15 @@ jobs:
         id: restore
         shell: bash        
         run: |
-          dotnet restore src > ${{ runner.temp }}/dotnetrestore.log
-          CVECOUNT=$(cat ${{ runner.temp }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
+          mkdir ${{ github.workspace }}/results
+          dotnet restore src > ${{ github.workspace }}/results/dotnetrestore.log
+          CVECOUNT=$(cat ${{ github.workspace }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
           exit $CVECOUNT
       - name: Upload results on failure
         if: ${{ failure() }}
         shell: bash
         working-directory: ./src
-        run: |
-          mkdir ${{ github.workspace }}/results
+        run: |          
           dotnet list package --vulnerable --include-transitive --format json >> "${{ github.workspace }}/results/vulnerabilities.json"
           jq -s '.' */obj/project.assets.json > "${{ github.workspace }}/results/all.project.assets.json"
           curl -X POST \
@@ -44,6 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: files
-          path: |
-            ${{ runner.temp }}/dotnetrestore.log
-            ${{ github.workspace }}/results/*.json
+          path: ${{ github.workspace }}/results/
