@@ -28,7 +28,10 @@ jobs:
         run: |
           mkdir ${{ github.workspace }}/results
           touch ${{ github.workspace }}/results/dotnetrestore.log
-          CVECOUNT=$(dotnet restore src | tee ${{ github.workspace }}/results/dotnetrestore.log || true | grep -c -e "NU190[1-4]")          
+          set +e +o pipefail
+          CVECOUNT=$(dotnet restore src | tee ${{ github.workspace }}/results/dotnetrestore.log | grep -c -e "NU190[1-4]")
+          set -e -o pipefail
+          exit_code=0
           RESTOREOUTPUT=$(cat ${{ github.workspace }}/results/dotnetrestore.log)
           RESTOREOUTPUT="${RESTOREOUTPUT//'%'/'%25'}"
           RESTOREOUTPUT="${RESTOREOUTPUT//$'\n'/'%0A'}"
