@@ -5,7 +5,7 @@ on:
     outputs:
        restoreoutput:
          description: "Standard output of the dotnet restore call"
-         value: ${{ jobs.restore.outputs.restoreoutput }}
+         value: ${{ jobs.nuget-audit.outputs.restoreoutput }}
     secrets:
       PROCESSNUGETAUDITRESULTS_KEY:
         required: true
@@ -13,6 +13,8 @@ on:
 jobs:
   nuget-audit:
     runs-on: ubuntu-22.04
+    outputs:
+      restoreoutput: ${{ steps.restore.outputs.restoreoutput }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
