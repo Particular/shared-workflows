@@ -22,7 +22,11 @@ jobs:
         run: |
           mkdir ${{ github.workspace }}/results
           dotnet restore src > ${{ github.workspace }}/results/dotnetrestore.log
+          while read p; do
+            echo "$p"
+          done <${{ github.workspace }}/results/dotnetrestore.log
           CVECOUNT=$(cat ${{ github.workspace }}/dotnetrestore.log | grep -c -e "NU190[1-4]")
+          echo $CVECOUNT
           exit $CVECOUNT
       - name: Upload results on failure
         if: ${{ failure() }}
