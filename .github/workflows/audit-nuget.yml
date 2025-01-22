@@ -5,6 +5,8 @@ on:
     secrets:
       PROCESSNUGETAUDITRESULTS_KEY:
         required: true
+      PROCESSNUGETAUDITRESULTS_URL:
+        required: true
 
 jobs:
   nuget-audit:
@@ -43,7 +45,7 @@ jobs:
              -F "vulnerabilities=${{ github.workspace }}/results/vulnerabilities.json" \
              -F "assets=${{ github.workspace }}/results/all.project.assets.json" \
              -H "x-functions-key: ${{ secrets.PROCESSNUGETAUDITRESULTS_KEY }}" \
-             https://internalautomation.azurewebsites.net/api/ProcessNuGetAuditResults
+             ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files on failure
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
