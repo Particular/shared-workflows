@@ -44,7 +44,7 @@ jobs:
              -F "commit=${{ github.sha }}" \
              -F "vulnerabilities=${{ github.workspace }}/results/vulnerabilities.json" \
              -F "assets=${{ github.workspace }}/results/all.project.assets.json" \
-             -H "x-functions-key: ${{ secrets.PROCESSNUGETAUDITRESULTS_KEY }}" \
+             -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files on failure
         if: ${{ failure() }}
