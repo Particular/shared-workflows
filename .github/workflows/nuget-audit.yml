@@ -3,7 +3,7 @@ name: NuGet audit
 on:
   workflow_call:
     secrets:
-      PROCESSNUGETAUDITRESULTS_KEY:
+      FUNCTIONS_AUTHKEY:
         required: true
       PROCESSNUGETAUDITRESULTS_URL:
         required: true
