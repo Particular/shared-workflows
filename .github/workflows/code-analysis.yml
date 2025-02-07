@@ -23,7 +23,7 @@ jobs:
       - name: Report warnings
         if: ${{  always() }}
         run: |
-          if [ -f "code-analysis-warnings.md"]; then
+          if [ -f code-analysis-warnings.md ]; then
             cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
           fi
       - name: Upload warnings
