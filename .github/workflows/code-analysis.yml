@@ -21,6 +21,9 @@ jobs:
       - name: Repo integrity tests
         id: run-tests
         uses: Particular/repo-integrity-action@main
+      - name: Check for file
+        if: ${{ always() }}
+        run: cat code-analysis-warnings.md
       - name: Report warnings
         if: ${{  always() && steps.run-tests.outputs.has-warnings == 'true' }}
         run: cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
