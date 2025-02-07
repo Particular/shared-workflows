@@ -21,9 +21,11 @@ jobs:
       - name: Repo integrity tests
         id: run-tests
         uses: Particular/repo-integrity-action@main
-      - name: Check for file
+      - name: Dump steps context
         if: ${{ always() }}
-        run: cat code-analysis-warnings.md
+        env:
+          STEPS_CONTEXT: ${{ toJSON(steps) }}
+        run: echo "$STEPS_CONTEXT"
       - name: Report warnings
         if: ${{  always() && steps.run-tests.outputs.has-warnings == 'true' }}
         run: cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
