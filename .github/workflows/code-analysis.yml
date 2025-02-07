@@ -22,10 +22,10 @@ jobs:
         id: run-tests
         uses: Particular/repo-integrity-action@main
       - name: Report warnings
-        if: ${{ steps.run-tests.outputs.has-warnings == 'true' }}
+        if: ${{  always() && steps.run-tests.outputs.has-warnings == 'true' }}
         run: cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
       - name: Upload warnings
-        if: ${{ steps.run-tests.outputs.has-warnings == 'true' }}
+        if: ${{ always() && steps.run-tests.outputs.has-warnings == 'true' }}
         uses: actions/upload-artifact@v4.6.0
         with:
           name: code-analysis-warnings
