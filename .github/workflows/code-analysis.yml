@@ -19,21 +19,18 @@ jobs:
           # Should match the version used in https://github.com/Particular/repo-integrity-action/blob/main/src/RepoIntegrityTests/RepoIntegrityTests.csproj
           dotnet-version: 8.0.x
       - name: Repo integrity tests
-        id: run-tests
         uses: Particular/repo-integrity-action@main
-      - name: Dump steps context
-        if: ${{ always() }}
-        env:
-          STEPS_CONTEXT: ${{ toJSON(steps) }}
-        run: echo "$STEPS_CONTEXT"
       - name: Report warnings
-        if: ${{  always() && steps.run-tests.outputs.has-warnings == 'true' }}
-        run: cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
+        if: ${{  always() }}
+        run: |
+          if [ -f "code-analysis-warnings.md"]; then
+            cat code-analysis-warnings.md >> "$GITHUB_OUTPUT"
+          fi
       - name: Upload warnings
-        if: ${{ always() && steps.run-tests.outputs.has-warnings == 'true' }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4.6.0
         with:
           name: code-analysis-warnings
           path: code-analysis-warnings.md
-          if-no-files-found: error
+          if-no-files-found: ignore
           retention-days: 30
