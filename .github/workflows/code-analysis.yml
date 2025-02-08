@@ -24,7 +24,7 @@ jobs:
         if: ${{  always() }}
         run: |
           if [ -f code-analysis-warnings.md ]; then
-            echo "$(cat code-analysis-warnings.md)" >> $GITHUB_OUTPUT
+            cat code-analysis-warnings.md >> $GITHUB_STEP_SUMMARY
           fi
       - name: Upload warnings
         if: ${{ always() }}
