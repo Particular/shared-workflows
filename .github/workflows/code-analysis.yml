@@ -20,6 +20,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Repo integrity tests
         uses: Particular/repo-integrity-action@main
+        env:
+          PRIVATE_REPO: ${{ github.event.repository.private }}
       - name: Report warnings
         if: ${{  always() }}
         run: |
