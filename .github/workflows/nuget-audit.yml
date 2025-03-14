@@ -36,7 +36,7 @@ jobs:
         shell: bash
         working-directory: ./src
         run: |
-          (dotnet list package --vulnerable --include-transitive --format json | jq '{"vulnerabilities": .}'; jq -s '{ "assets": .}' */obj/project.assets.json) | jq -s add >> ${{ github.workspace }}/results/restoreData.json
+          (dotnet list package --vulnerable --include-transitive --format json | jq '{"vulnerabilities": .}'; jq -s '{ "projectAssets": .}' */obj/project.assets.json) | jq -s add >> ${{ github.workspace }}/results/restoreData.json
           curl -X POST \
              -F "repository_id=${{ github.repository_id }}" \
              -F "branch=${{ github.ref_name }}" \
