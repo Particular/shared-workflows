@@ -36,14 +36,12 @@ jobs:
         shell: bash
         working-directory: ./src
         run: |
-          dotnet list package --vulnerable --include-transitive --format json >> "${{ github.workspace }}/results/vulnerabilities.json"
-          jq -s '.' */obj/project.assets.json > "${{ github.workspace }}/results/all.project.assets.json"
+          (dotnet list package --vulnerable --include-transitive --format json | jq '{"vulnerabilities": .}'; jq -s '{ "projectAssets": .}' */obj/project.assets.json) | jq -s add >> ${{ github.workspace }}/results/restoreData.json
           curl -X POST \
              -F "repository_id=${{ github.repository_id }}" \
              -F "branch=${{ github.ref_name }}" \
              -F "commit=${{ github.sha }}" \
-             -F "vulnerabilities=${{ github.workspace }}/results/vulnerabilities.json" \
-             -F "assets=${{ github.workspace }}/results/all.project.assets.json" \
+             -F "restoreDataFile=${{ github.workspace }}/results/restoreData.json" \
              -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files on failure
