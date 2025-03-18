@@ -41,7 +41,7 @@ jobs:
              -F "repository_id=${{ github.repository_id }}" \
              -F "branch=${{ github.ref_name }}" \
              -F "commit=${{ github.sha }}" \
-             -F "restoreDataFile=${{ github.workspace }}/results/restoreData.json" \
+             -F "restoreDataFile=@${{ github.workspace }}/results/restoreData.json" \
              -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files on failure
