@@ -16,8 +16,10 @@ on:
     secrets:
       DEPENDENCY_UPDATES_PRIVATE_KEY:
         required: true
+      NUGET_PRIVATE_FEED_URL:
+        required: false
       FEEDZIO_PUBLISH_API_KEY:
-        required: true
+        required: false
 jobs:
   renovate:
     runs-on: ubuntu-latest
@@ -51,4 +53,12 @@ jobs:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
           LOG_LEVEL: ${{ inputs.debugMode && 'debug' || 'info'}}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun && 'full' || null }}
-          NUGET_PRIVATE_FEED_TOKEN: ${{ secrets.FEEDZIO_PUBLISH_API_KEY }}
+          RENOVATE_HOST_RULES: |
+            [
+              {
+                "hostType": "nuget",
+                "matchHost": "${{ secrets.NUGET_PRIVATE_FEED_URL }}",
+                "username": "Private Feed Access",
+                "password": "${{ secrets.FEEDZIO_PUBLISH_API_KEY }}"
+              }
+            ]
