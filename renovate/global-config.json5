@@ -15,7 +15,7 @@
   enabledManagers: [ "nuget" ],
   packageRules: [
     {
-      # Do not update global.json files
+      // Do not update global.json files
       matchDatasources: [ "dotnet-version" ],
       enabled: false
     }
