@@ -1,7 +1,6 @@
 {
   extends: [
-    //'config:base',
-    'github>whitesource/merge-confidence:beta'
+    'mergeConfidence:all-badges'
   ],
   rebaseWhen: 'conflicted',
   automerge: false,
