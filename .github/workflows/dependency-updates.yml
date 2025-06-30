@@ -33,6 +33,7 @@ jobs:
           repository: Particular/shared-workflows
           path: config
           sparse-checkout: renovate
+          sparse-checkout-cone-mode: false
       - name: Check clone result
         run: |
           echo "--ls--"
