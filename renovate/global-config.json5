@@ -1,6 +1,7 @@
 {
   extends: [
-    'mergeConfidence:all-badges'
+    'mergeConfidence:all-badges',
+    ':dependencyDashboard'
   ],
   rebaseWhen: 'conflicted',
   automerge: false,
@@ -8,15 +9,44 @@
   ignoreTests: false,
   branchPrefix: 'renovate/',
   platform: 'github',
-  packageRules: [],
   onboarding: false,
   requireConfig: 'optional',
-  enabledManagers: [ "nuget" ],
+  enabledManagers: [ "nuget", "github-actions" ],
+  labels: ['dependencies'],
   packageRules: [
     {
       // Do not update global.json files
       matchDatasources: [ "dotnet-version" ],
       enabled: false
+    },
+    {
+      // Apply label to .NET dependencies
+      matchManagers: ['nuget'],
+      labels: ['NuGet']
+    },
+    {
+      // Apply label to GitHub Actions dependencies
+      matchManagers: ['github-actions'],
+      labels: ['github_actions']
+    },
+    {
+      // NServiceBus Core packages group
+      matchDatasources: ['nuget'],
+      matchPackageNames: [
+        'NServiceBus',
+        'NServiceBus.AcceptanceTesting',
+        'NServiceBus.AcceptanceTests.Sources',
+        'NServiceBus.PersistenceTests.Sources',
+        'NServiceBus.TransportTests.Sources'
+      ],
+      groupName: "NServiceBus Core"
+      groupSlug: 'nsb-core'
+    },
+    {
+      // AWSSDK packages
+      matchDatasource: ['nuget'],
+      matchPackageNames: ['/^AWSSDK\..*/i']
+      groupName: "AWSSDK"
     }
   ],
   prConcurrentLimit: 2
