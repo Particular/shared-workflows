@@ -17,7 +17,7 @@ on:
       DEPENDENCY_UPDATES_PRIVATE_KEY:
         required: true
       FEEDZIO_PUBLISH_API_KEY:
-        required: false
+        required: true
 jobs:
   renovate:
     runs-on: ubuntu-latest
