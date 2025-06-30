@@ -39,13 +39,13 @@
         'NServiceBus.PersistenceTests.Sources',
         'NServiceBus.TransportTests.Sources'
       ],
-      groupName: "NServiceBus Core"
+      groupName: "NServiceBus Core",
       groupSlug: 'nsb-core'
     },
     {
       // AWSSDK packages
       matchDatasource: ['nuget'],
-      matchPackageNames: ['/^AWSSDK\..*/i']
+      matchPackageNames: ['/^AWSSDK\..*/i'],
       groupName: "AWSSDK"
     }
   ],
