@@ -1,0 +1,53 @@
+name: Renovate
+on:
+  workflow_call:
+    inputs:
+      dryRun:
+        type: boolean
+        required: false
+        # True until we launch
+        default: true
+        description: Dry run (don't create PRs)
+    secrets:
+      DEPENDENCY_UPDATES_PRIVATE_KEY:
+        required: true
+      NUGET_PRIVATE_FEED_TOKEN:
+        required: false
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get token
+        id: get-token
+        uses: actions/create-github-app-token@v2.0.6
+        with:
+          app-id: 1486299
+          private-key: ${{ secrets.DEPENDENCY_UPDATES_PRIVATE_KEY }}
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
+        with:
+          path: main
+      - name: Checkout common config
+        uses: actions/checkout@v4.2.2
+        with:
+          path: config
+          sparse-checkout: renovate
+      - name: Check clone result
+        run: |
+          echo "--ls--"
+          ls
+          echo "--ls main--"
+          ls main
+          echo "--ls config--"
+          ls config
+          echo "--ls config/*--"
+          ls config/*
+      #- name: Run Renovate
+      #  uses: renovatebot/github-action@v43.0.0
+      #  with:
+      #    configurationFile: config/renovate/global-config.json5
+      #    token: ${{ steps.get-token.outputs.token }}
+      #  env:
+      #    LOG_LEVEL: debug
+      #    RENOVATE_DRY_RUN: ${{ inputs.dryRun && 'full' || null }}
+      #    NUGET_PRIVATE_FEED_TOKEN: ${{ secrets.FEEDZIO_PUBLISH_API_KEY }}
