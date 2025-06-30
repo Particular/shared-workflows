@@ -1,0 +1,24 @@
+{
+  extends: [
+    //'config:base',
+    'github>whitesource/merge-confidence:beta'
+  ],
+  rebaseWhen: 'conflicted',
+  automerge: false,
+  automergeType: "pr",
+  ignoreTests: false,
+  branchPrefix: 'renovate/',
+  platform: 'github',
+  packageRules: [],
+  onboarding: false,
+  requireConfig: 'optional',
+  enabledManagers: [ "nuget" ],
+  packageRules: [
+    {
+      # Do not update global.json files
+      matchDatasources: [ "dotnet-version" ],
+      enabled: false
+    }
+  ],
+  prConcurrentLimit: 2
+}
