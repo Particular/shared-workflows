@@ -16,7 +16,7 @@ on:
     secrets:
       DEPENDENCY_UPDATES_PRIVATE_KEY:
         required: true
-      NUGET_PRIVATE_FEED_TOKEN:
+      FEEDZIO_PUBLISH_API_KEY:
         required: false
 jobs:
   renovate:
@@ -49,6 +49,6 @@ jobs:
           token: ${{ steps.get-token.outputs.token }}
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
-          LOG_LEVEL: ${{ inputs.debugMode && 'debug' || 'info' }}
+          LOG_LEVEL: ${{ inputs.debugMode && 'debug' || 'info'}}
           RENOVATE_DRY_RUN: ${{ inputs.dryRun && 'full' || null }}
           NUGET_PRIVATE_FEED_TOKEN: ${{ secrets.FEEDZIO_PUBLISH_API_KEY }}
