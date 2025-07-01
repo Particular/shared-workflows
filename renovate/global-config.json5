@@ -71,7 +71,9 @@
         'NUnit.Analyzers',
         'NUnit3TestAdapter',
       ],
-
+      automerge: true,
+      ignoreTests: false,
+      automergeStrategy: 'squash',
     }
   ],
   prConcurrentLimit: 2
