@@ -13,6 +13,7 @@
   requireConfig: 'optional',
   enabledManagers: [ "nuget", "github-actions" ],
   labels: ['dependencies'],
+  dependencyDashboardLabels: ['dependencies'],
   packageRules: [
     {
       // Do not update global.json files
@@ -30,7 +31,20 @@
       addLabels: ['github_actions']
     },
     {
-      // NServiceBus Core packages group
+      // Globally ignored packages
+      matchDatasources: ['nuget'],
+      matchPackageNames: [
+        // Distributed via RepoStandards
+        'Particular.Analyzers',
+        // Changing these 3 dependencies affects the .NET SDK and Visual Studio versions we support
+        // These types of updates should be more intentional than an automated update
+        'Microsoft.Build.Utilities.Core',
+        'Microsoft.CodeAnalysis.CSharp',
+        'Microsoft.CodeAnalysis.CSharp.Workspaces',
+      ]
+    },
+    {
+      // Group NServiceBus Core packages
       matchDatasources: ['nuget'],
       matchPackageNames: [
         'NServiceBus',
@@ -43,10 +57,21 @@
       groupSlug: 'nsb-core'
     },
     {
-      // AWSSDK packages
+      // Group AWSSDK packages
       matchDatasources: ['nuget'],
-      matchPackageNames: ['/^AWSSDK\..*/i'],
+      matchSourceUrls: ['https://github.com/aws/aws-sdk-net'],
       groupName: "AWSSDK"
+    },
+    {
+      // Auto-merge development dependencies
+      matchDatasources: ['nuget'],
+      matchPackageNames: [
+        'Microsoft.NET.Test.Sdk',
+        'NUnit',
+        'NUnit.Analyzers',
+        'NUnit3TestAdapter',
+      ],
+
     }
   ],
   prConcurrentLimit: 2
