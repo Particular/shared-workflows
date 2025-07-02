@@ -28,6 +28,7 @@ jobs:
         with:
           app-id: 1486299
           private-key: ${{ secrets.DEPENDENCY_UPDATES_PRIVATE_KEY }}
+          owner: Particular
       - name: Checkout config
         uses: actions/checkout@v4.2.2
         with:
