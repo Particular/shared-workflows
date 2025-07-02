@@ -17,7 +17,7 @@
   packageRules: [
     {
       // Do not update global.json files or GitHub Actions run-as values
-      matchDatasources: [ dotnet-version', 'github-runners' ],
+      matchDatasources: [ 'dotnet-version', 'github-runners' ],
       enabled: false
     },
     {
