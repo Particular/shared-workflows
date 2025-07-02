@@ -34,10 +34,11 @@ jobs:
           repository: Particular/renovate-config
           token: ${{ steps.get-token.outputs.token}}
           ref: main
+          path: renovate-config
       - name: Run Renovate
         uses: renovatebot/github-action@v43.0.0
         with:
-          configurationFile: ${{ github.repository }}/config.json
+          configurationFile: "renovate-config/${{ github.repository }}/config.json"
           token: ${{ steps.get-token.outputs.token }}
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
