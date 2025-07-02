@@ -1,8 +1,7 @@
 {
   extends: [
     'mergeConfidence:all-badges',
-    ':dependencyDashboard',
-    'github>Particular/renovate-ignores'
+    ':dependencyDashboard'
   ],
   rebaseWhen: 'conflicted',
   automerge: false,
