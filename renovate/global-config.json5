@@ -1,7 +1,8 @@
 {
   extends: [
     'mergeConfidence:all-badges',
-    ':dependencyDashboard'
+    ':dependencyDashboard',
+    'github>Particular/renovate-ignores'
   ],
   rebaseWhen: 'conflicted',
   automerge: false,
@@ -31,7 +32,7 @@
       addLabels: ['github_actions']
     },
     {
-      // Globally ignored packages
+      // Globally ignored NuGet packages
       matchDatasources: ['nuget'],
       matchPackageNames: [
         // Distributed via RepoStandards
@@ -42,6 +43,12 @@
         'Microsoft.CodeAnalysis.CSharp',
         'Microsoft.CodeAnalysis.CSharp.Workspaces',
       ]
+    },
+    {
+      // Ignore actions/webapps-deploy@v3 because it breaks our deployments
+      matchDatasources: ['github-tags'],
+      matchPackageNames: ['azure/webapps-deploy'],
+      allowedVersions: '<3.0'
     },
     {
       // Group NServiceBus Core packages
