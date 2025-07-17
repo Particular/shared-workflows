@@ -7,7 +7,7 @@
   automergeType: "pr",
   ignoreTests: false,
   branchPrefix: 'renovate/',
-  enabledManagers: [ "nuget", "github-actions" ],
+  enabledManagers: [ "nuget", "github-actions", "npm" ],
   labels: ['dependencies'],
   dependencyDashboard: true,
   dependencyDashboardLabels: ['dependencies'],
@@ -32,6 +32,11 @@
       // Apply label to GitHub Actions dependencies
       matchManagers: ['github-actions'],
       addLabels: ['github_actions']
+    },
+    {
+      // Apply label to NPM dependencies
+      matchManagers: ['npm'],
+      addLabels: ['npm']
     },
     {
       // Globally ignored NuGet packages
