@@ -34,9 +34,16 @@
       addLabels: ['github_actions']
     },
     {
-      // Apply label to NPM dependencies
+      // Apply label & additional settings to NPM dependencies
       matchManagers: ['npm'],
-      addLabels: ['npm']
+      addLabels: ['npm'],
+      vulnerabilityAlerts: {
+        enabled: true
+      },
+      lockFileMaintenance: {
+        enabled: true,
+        schedule: ['at any time']
+      }
     },
     {
       // Globally ignored NuGet packages
