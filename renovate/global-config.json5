@@ -93,8 +93,6 @@
         "GitHubActionsTestLogger",
         "Microsoft.NET.Test.Sdk",
         "NuDoq",
-        "NuGet.Versioning",
-        "NuGet.Protocol",
         "NSubstitute",
         "NUnit",
         "NUnit.Analyzers",
