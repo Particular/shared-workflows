@@ -22,6 +22,7 @@ jobs:
         uses: Particular/repo-integrity-action@main
         env:
           PRIVATE_REPO: ${{ github.event.repository.private }}
+          AFFECTED_BRANCH: ${{ github.base_ref || github.ref_name }}
       - name: Report warnings
         if: ${{  always() }}
         run: |
