@@ -56,7 +56,8 @@
         'Microsoft.Build.Utilities.Core',
         'Microsoft.CodeAnalysis.CSharp',
         'Microsoft.CodeAnalysis.CSharp.Workspaces',
-      ]
+      ],
+      enabled: false
     },
     {
       // Ignore actions/webapps-deploy@v3 because it breaks our deployments
