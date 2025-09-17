@@ -9,6 +9,7 @@
   branchPrefix: 'renovate/',
   enabledManagers: [ "nuget", "github-actions", "npm" ],
   labels: ['dependencies'],
+  semanticCommits: 'disabled',
   dependencyDashboard: true,
   dependencyDashboardLabels: ['dependencies'],
   prConcurrentLimit: 0,
