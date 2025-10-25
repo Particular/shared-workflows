@@ -46,7 +46,7 @@ jobs:
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files on failure
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: files
           path: ${{ github.workspace }}/results/
