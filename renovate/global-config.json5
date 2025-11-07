@@ -77,7 +77,8 @@
         'NServiceBus.TransportTests.Sources'
       ],
       groupName: "NServiceBus Core",
-      groupSlug: 'nsb-core'
+      groupSlug: 'nsb-core',
+      addLabels: ['Core']
     },
     {
       // Group AWSSDK packages
