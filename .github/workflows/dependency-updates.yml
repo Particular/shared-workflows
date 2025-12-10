@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Get token
         id: get-token
-        uses: actions/create-github-app-token@v2.1.4
+        uses: actions/create-github-app-token@v2.2.1
         with:
           app-id: 1486299
           private-key: ${{ secrets.DEPENDENCY_UPDATES_PRIVATE_KEY }}
