@@ -87,6 +87,17 @@
       groupName: "AWSSDK"
     },
     {
+      // Group Gateway packages
+      matchDatasources: ['nuget'],
+      matchPackageNames: [
+        'NServiceBus.Gateway',
+        'NServiceBus.Gateway.AcceptanceTests.Sources',
+        'NServiceBus.Gateway.PersistenceTests.Sources',
+      ],
+      groupName: "NServiceBus Gateway",
+      groupSlug: 'nsb-gateway'
+    },
+    {
       // Auto-merge NuGet build dependencies
       matchDatasources: ['nuget'],
       matchPackageNames: [
