@@ -26,9 +26,9 @@ jobs:
     steps:
       - name: Get token
         id: get-token
-        uses: actions/create-github-app-token@v3.0.0
+        uses: actions/create-github-app-token@v3.1.1
         with:
-          app-id: 1486299
+          client-id: ${{ vars.DEPENDENCY_UPDATES_APP_CLIENT_ID }}
           private-key: ${{ secrets.DEPENDENCY_UPDATES_PRIVATE_KEY }}
           owner: Particular
       - name: Checkout config
