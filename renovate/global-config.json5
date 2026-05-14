@@ -161,12 +161,12 @@
       description:"Packages that ship as part of .NET",
       matchDatasources: ["nuget"],
       matchPackageNames: [
-        "/^Microsoft.AspNetCore./",
-        "/^Microsoft.Extensions./",
-        "/^System./",
-        "!/^System.IdentityModel./",
-        "!/^System.Management.Automation/",
-        "!/^System.Reactive/"
+        "Microsoft.AspNetCore.**",
+        "Microsoft.Extensions.**",
+        "System.**",
+        "!System.IdentityModel.**",
+        "!System.Management.Automation",
+        "!System.Reactive"
       ],
       groupName: ".NET Packages",
       groupSlug: "dotnet-packages"
