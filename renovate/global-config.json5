@@ -166,10 +166,7 @@
         "System.**",
         "!System.IdentityModel.**",
         "!System.Management.Automation",
-        "!System.Reactive",
-        "!System.Data.**",
-        "!System.Private.**",
-        "!System.Net.**",
+        "!System.Reactive"
       ],
       groupName: ".NET Packages",
       groupSlug: "dotnet-packages"
