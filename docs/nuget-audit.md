@@ -23,11 +23,11 @@ The workflow detects if `dotnet restore` reports any of the following warning co
 - NU1903
 - NU1904
 
-If so it will exit with a number equal to the number of warning codes detected (total, not distinct), causing it to fail the workflow if any are detected.
+If so it records a `cvecount` step output equal to the number of warning codes detected (total, not distinct). The follow-up upload and archive steps run when that output is greater than zero.
 
 ### Restore data file
 
-If the workflow has failed because [CVEs have been detected](#cve-detection-mechanism), the workflow gathers information for further processing by [Internal Automation](https://github.com/Particular/InternalAutomation):
+If [CVEs have been detected](#cve-detection-mechanism), the workflow gathers information for further processing by [Internal Automation](https://github.com/Particular/InternalAutomation):
 
 - The GitHub repository ID that called this shared workflow
 - The name of the repository branch that called this shared workflow

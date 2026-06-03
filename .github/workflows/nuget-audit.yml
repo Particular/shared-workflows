@@ -20,19 +20,20 @@ jobs:
           global-json-file: global.json
       - name: .NET Restore
         id: restore
-        shell: bash        
+        shell: bash
         run: |
-          mkdir ${{ github.workspace }}/results
-          touch ${{ github.workspace }}/results/dotnetrestore.log
-          set +e +o pipefail
-          CVECOUNT=$(dotnet restore src | tee ${{ github.workspace }}/results/dotnetrestore.log | grep -c -e "NU190[1-4]")
-          set -e -o pipefail
-          while read -r line; do
-            echo "$line"
-          done < ${{ github.workspace }}/results/dotnetrestore.log
-          exit $CVECOUNT
-      - name: Upload results on failure
-        if: ${{ failure() }}
+          mkdir -p ${{ github.workspace }}/results
+
+          dotnet restore src > "${{ github.workspace }}/results/dotnetrestore.log" 2>&1 || true
+          cat "${{ github.workspace }}/results/dotnetrestore.log"
+
+          CVECOUNT=$(awk '/NU190[1-4]/ { count++ } END { print count + 0 }' "${{ github.workspace }}/results/dotnetrestore.log")
+
+          echo "cvecount=${CVECOUNT}" >> "$GITHUB_OUTPUT"
+
+          echo "Found $CVECOUNT CVEs"
+      - name: Upload results when CVEs detected
+        if: ${{ steps.restore.outputs.cvecount > 0 }}
         shell: bash
         working-directory: ./src
         run: |
@@ -44,8 +45,8 @@ jobs:
              -F "restoreDataFile=@${{ github.workspace }}/results/restoreData.json" \
              -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
-      - name: Archive files on failure
-        if: ${{ failure() }}
+      - name: Archive files when CVEs detected
+        if: ${{ steps.restore.outputs.cvecount > 0 }}
         uses: actions/upload-artifact@v7
         with:
           name: files
