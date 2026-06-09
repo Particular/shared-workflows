@@ -164,6 +164,7 @@
         "Microsoft.AspNetCore.**",
         "Microsoft.Extensions.**",
         "System.**",
+        "!Microsoft.Extensions.Azure",
         "!System.IdentityModel.**",
         "!System.Management.Automation",
         "!System.Reactive"
