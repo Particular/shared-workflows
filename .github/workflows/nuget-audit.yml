@@ -32,13 +32,18 @@ jobs:
           echo "cvecount=${CVECOUNT}" >> "$GITHUB_OUTPUT"
 
           echo "Found $CVECOUNT CVEs"
-      - name: Upload results when CVEs detected
+      - name: Create results file when CVEs detected
         if: ${{ steps.restore.outputs.cvecount > 0 }}
         shell: bash
         working-directory: ./src
         run: |
           (dotnet list package --vulnerable --include-transitive --format json | jq '{"vulnerabilities": .}'; jq -s '{ "projectAssets": .}' */obj/project.assets.json) | jq -s add >> ${{ github.workspace }}/results/restoreData.json
-          curl -X POST \
+      - name: Upload results when CVEs detected
+        if: ${{ steps.restore.outputs.cvecount > 0 }}
+        shell: bash
+        working-directory: ./src
+        run: |
+           curl -X POST \
              -F "repository_id=${{ github.repository_id }}" \
              -F "branch=${{ github.ref_name }}" \
              -F "commit=${{ github.sha }}" \
