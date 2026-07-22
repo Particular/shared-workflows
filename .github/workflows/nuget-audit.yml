@@ -32,7 +32,7 @@ jobs:
           echo "cvecount=${CVECOUNT}" >> "$GITHUB_OUTPUT"
 
           echo "Found $CVECOUNT CVEs"
-      - name: Upload results when CVEs detected
+      - name: Create results file when CVEs detected
         if: ${{ steps.restore.outputs.cvecount > 0 }}
         shell: bash
         working-directory: ./src
@@ -49,7 +49,7 @@ jobs:
              -F "commit=${{ github.sha }}" \
              -F "restoreDataFile=@${{ github.workspace }}/results/restoreData.json" \
              -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
-             ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}  
+             ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files when CVEs detected
         if: ${{ steps.restore.outputs.cvecount > 0 }}
         uses: actions/upload-artifact@v7
