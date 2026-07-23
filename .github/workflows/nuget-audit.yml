@@ -24,20 +24,113 @@ jobs:
         run: |
           mkdir -p ${{ github.workspace }}/results
 
-          dotnet restore src > "${{ github.workspace }}/results/dotnetrestore.log" 2>&1 || true
+          set +e
+          dotnet restore src > "${{ github.workspace }}/results/dotnetrestore.log" 2>&1
+          RESTOREEXIT=$?
+          set -e
+
           cat "${{ github.workspace }}/results/dotnetrestore.log"
 
           CVECOUNT=$(awk '/NU190[1-4]/ { count++ } END { print count + 0 }' "${{ github.workspace }}/results/dotnetrestore.log")
 
           echo "cvecount=${CVECOUNT}" >> "$GITHUB_OUTPUT"
+          echo "restoreexit=${RESTOREEXIT}" >> "$GITHUB_OUTPUT"
 
-          echo "Found $CVECOUNT CVEs"
+          echo "Restore exited with code $RESTOREEXIT and found $CVECOUNT CVEs"
+
+          if (( RESTOREEXIT != 0 )); then
+            echo "::warning::dotnet restore exited with code $RESTOREEXIT. See dotnetrestore.log in the files artifact."
+          fi
       - name: Create results file when CVEs detected
         if: ${{ steps.restore.outputs.cvecount > 0 }}
         shell: bash
         working-directory: ./src
         run: |
-          (dotnet list package --vulnerable --include-transitive --format json | jq '{"vulnerabilities": .}'; jq -s '{ "projectAssets": .}' */obj/project.assets.json) | jq -s add >> ${{ github.workspace }}/results/restoreData.json
+          RESULTS_DIRECTORY="${{ github.workspace }}/results"
+          PACKAGE_LIST_FILE="$RESULTS_DIRECTORY/dotnet-package-list.json"
+          PACKAGE_LIST_LOG="$RESULTS_DIRECTORY/dotnet-package-list.log"
+          PROJECT_ASSETS_FILE="$RESULTS_DIRECTORY/project-assets.json"
+          RESTORE_DATA_FILE="$RESULTS_DIRECTORY/restoreData.json"
+
+          echo "::group::.NET and NuGet environment"
+          dotnet --info
+          dotnet nuget list source
+          echo "jq version: $(jq --version)"
+          echo "::endgroup::"
+
+          set +e
+          dotnet list package \
+            --vulnerable \
+            --include-transitive \
+            --format json \
+            --no-restore \
+            > "$PACKAGE_LIST_FILE" \
+            2> "$PACKAGE_LIST_LOG"
+          PACKAGE_LIST_EXIT=$?
+          set -e
+
+          echo "dotnet list package exited with code $PACKAGE_LIST_EXIT"
+
+          if [[ -s "$PACKAGE_LIST_LOG" ]]; then
+            echo "::group::dotnet list package stderr"
+            cat "$PACKAGE_LIST_LOG"
+            echo "::endgroup::"
+          fi
+
+          if ! jq -e 'type == "object" and (.projects | type == "array")' "$PACKAGE_LIST_FILE" > /dev/null; then
+            echo "::error::dotnet list package did not produce the expected JSON."
+            cat "$PACKAGE_LIST_FILE"
+            exit 1
+          fi
+
+          PROBLEM_COUNT=$(jq '(.problems // []) | length' "$PACKAGE_LIST_FILE")
+          MISSING_ASSETS_PROBLEM_COUNT=$(jq '
+            [
+              .problems[]?
+              | select(.text | contains("No assets file was found"))
+            ]
+            | length
+          ' "$PACKAGE_LIST_FILE")
+
+          if (( PROBLEM_COUNT > 0 )); then
+            echo "::group::dotnet list package problems"
+            jq -r '.problems[] | "\(.level): \(.project): \(.text)"' "$PACKAGE_LIST_FILE"
+            echo "::endgroup::"
+          fi
+
+          if (( PACKAGE_LIST_EXIT != 0 && (PROBLEM_COUNT == 0 || PROBLEM_COUNT != MISSING_ASSETS_PROBLEM_COUNT) )); then
+            echo "::error::dotnet list package exited with code $PACKAGE_LIST_EXIT and reported an unexpected problem."
+            exit "$PACKAGE_LIST_EXIT"
+          fi
+
+          if (( MISSING_ASSETS_PROBLEM_COUNT > 0 )); then
+            echo "::warning::dotnet list package skipped $MISSING_ASSETS_PROBLEM_COUNT project(s) that were excluded from restore; continuing with the restored projects."
+          fi
+
+          mapfile -d '' PROJECT_ASSET_FILES < <(find . -type f -path '*/obj/project.assets.json' -print0)
+
+          if (( ${#PROJECT_ASSET_FILES[@]} == 0 )); then
+            echo "::error::No project.assets.json files were found after restore."
+            exit 1
+          fi
+
+          echo "Found ${#PROJECT_ASSET_FILES[@]} project.assets.json files:"
+          printf '  %s\n' "${PROJECT_ASSET_FILES[@]}"
+
+          jq -s '{ "projectAssets": .}' "${PROJECT_ASSET_FILES[@]}" > "$PROJECT_ASSETS_FILE"
+          jq '{"vulnerabilities": del(.problems)}' "$PACKAGE_LIST_FILE" > "$RESULTS_DIRECTORY/vulnerabilities.json"
+          jq -s add \
+            "$RESULTS_DIRECTORY/vulnerabilities.json" \
+            "$PROJECT_ASSETS_FILE" \
+            > "$RESTORE_DATA_FILE"
+
+          jq -e '
+            (.vulnerabilities.projects | type == "array")
+            and (.projectAssets | type == "array")
+            and (.projectAssets | length > 0)
+          ' "$RESTORE_DATA_FILE" > /dev/null
+
+          echo "Created $RESTORE_DATA_FILE ($(wc -c < "$RESTORE_DATA_FILE") bytes)"
       - name: Upload results when CVEs detected
         if: ${{ steps.restore.outputs.cvecount > 0 }}
         shell: bash
@@ -51,7 +144,7 @@ jobs:
              -H "x-functions-key: ${{ secrets.FUNCTIONS_AUTHKEY }}" \
              ${{ secrets.PROCESSNUGETAUDITRESULTS_URL }}
       - name: Archive files when CVEs detected
-        if: ${{ steps.restore.outputs.cvecount > 0 }}
+        if: ${{ always() && steps.restore.outputs.cvecount > 0 }}
         uses: actions/upload-artifact@v7
         with:
           name: files
