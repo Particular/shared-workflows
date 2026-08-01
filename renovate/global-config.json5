@@ -146,6 +146,7 @@
         "Particular/setup-cosmosdb-action",
         "Particular/setup-mongodb-action",
         "Particular/setup-oracle-action",
+        "Particular/setup-postgres-action",
         "Particular/setup-rabbitmq-action",
         "Particular/setup-ravendb-action",
         "Particular/sign-nuget-packages-action",
