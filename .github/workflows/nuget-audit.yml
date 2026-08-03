@@ -21,6 +21,8 @@ jobs:
       - name: .NET Restore
         id: restore
         shell: bash
+        env:
+          NUGET_PRIVATE_FEED_TOKEN: ${{ secrets.FEEDZIO_PUBLISH_API_KEY }}
         run: |
           mkdir -p ${{ github.workspace }}/results
 
