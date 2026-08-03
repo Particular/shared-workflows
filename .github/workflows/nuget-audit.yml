@@ -7,6 +7,8 @@ on:
         required: true
       PROCESSNUGETAUDITRESULTS_URL:
         required: true
+      FEEDZIO_PUBLISH_API_KEY:
+        required: false
 
 jobs:
   nuget-audit:
